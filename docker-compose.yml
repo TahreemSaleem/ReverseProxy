@@ -1,0 +1,9 @@
+version: '2'
+services:
+        nginx:
+        grproxy:
+        hbase:
+        gserve1:
+        gserve2:
+
+networks:

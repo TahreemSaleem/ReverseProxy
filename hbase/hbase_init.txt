@@ -1,0 +1,2 @@
+create_namespace "se2"
+create "se2:library", {NAME=>"document", MIN_VERSIONS => '10', VERSIONS => '20'}, {NAME=>"metadata", MIN_VERSIONS => '10', VERSIONS => '20'}

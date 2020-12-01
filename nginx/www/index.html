@@ -1,0 +1,101 @@
+<!DOCTYPE html><html lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>SE2 Assignment 1: Online Library</title>
+
+<link rel="stylesheet" href="css/icons.css">
+<link rel="stylesheet" href="css/materialize.min.css">
+
+<script src="js/jquery-2.2.4.min.js"></script>
+<script src="js/materialize.min.js"></script>
+
+</head><body><div class="container">
+
+<h1>SE2 Library</h1>
+
+<div class="row"><form class="col s12">
+
+<!-- ID -->
+<div class="row">
+	<div class="input-field col s12">
+		<label>Document ID</label>
+		<input id="rowID" type="text" class="validate" required>
+	</div>
+</div>
+
+<!-- Document -->
+<div class="row"><h2>Document<h2></div>
+
+<div id="document"></div>
+<div class="row"><a href="#" onclick='add_row("document");' class="btn-floating waves-effect waves-light green"><i class="material-icons">add</i></a></div>
+
+<!-- Metadata -->
+<div class="row"><h2>Metadata<h2></div>
+
+<div id="metadata"></div>
+<div class="row"><a href="#" onclick='add_row("metadata");' class="btn-floating waves-effect waves-light green"><i class="material-icons">add</i></a></div>
+
+<!-- Submit -->
+<div class="row">
+<button class="btn waves-effect waves-light" type="submit" name="action">Save</button>
+</div>
+
+</form></div>
+
+</div>
+
+<script>
+var rowHTML = `
+<div class="row kvdata">
+	<div class="input-field col s5">
+		<label>column qualifier</label>
+		<input type="text" class="validate" required>
+	</div>
+	<div class="input-field col s6">
+		<label>data</label>
+		<textarea class="materialize-textarea"></textarea>
+	</div>
+	<div class="input-field col s1">
+		<a href="#" onclick="delete_row(this);" class="btn-floating waves-effect waves-light red"><i class="small material-icons">delete</i></a>
+	</div>
+</div>
+`;
+
+function add_row(name) {
+	var nameDiv = document.getElementById(name);
+	nameDiv.insertAdjacentHTML('beforeend', rowHTML);
+}
+
+function delete_row(node) {
+	var row = node.parentNode.parentNode;
+	row.parentNode.removeChild(row);
+}
+
+function set_kv(idx, row) {
+	var key = row.parentNode.id + ":" + row.getElementsByTagName("input")[0].value;
+	var value = "value" + ":" + row.getElementsByTagName("textarea")[0].value;
+	data["Row"][0]["Cell"].push({"column":key, "$":value});
+}
+
+$( "form" ).submit(function( event ) {
+	event.preventDefault();
+
+	data = new Object({"Row":[{"key": $("#rowID").val(), "Cell": []}]});
+	$(".kvdata").each(set_kv)
+
+	$.ajax({
+		url: '/library',
+		type: 'POST',
+		contentType: 'application/json',
+		dataType: 'text',
+		data: JSON.stringify(data)
+	}).fail(function (xhr, status, error) {
+		console.log(xhr + "; " + status + "; " + error);
+		alert("Error: " + error);
+	});
+	console.log(JSON.stringify(data));
+});
+</script>
+</body></html>

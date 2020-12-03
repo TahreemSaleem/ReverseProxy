@@ -14,13 +14,13 @@ Systems Engineering 2 - Assignment 1
 Organization
 ------------
 
-* **Hard deadline: 15.12.2019** 
+* **Hard deadline: 20.12.2020** 
 * You have to fork this repository and adapt the code in your forked repository.
 * Your solution will be tested at least three times per week in the time before the deadline.
 * If your solution fails one or multiple tests, you will *not* receive a detailed explanation of the reasons why it failed.
 * Your task is to figure it out on your own. However, we will provide information about the current state of your solution.
 * The results of these intermediate tests are not graded. Only the final result matters.
-* We will finally evaluate all repositories on *15.12.2019*.
+* We will finally evaluate all repositories on *20.12.2020*.
 * Usage of Git is mandatory (multiple commits with meaningful messages)
 * GO is mandatory
 * You have to work alone

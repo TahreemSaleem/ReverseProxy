@@ -14,7 +14,7 @@
 FROM alpine:latest
 MAINTAINER Hari Sekhon (https://www.linkedin.com/in/harisekhon)
 
-ARG HBASE_VERSION=1.4.13
+ARG HBASE_VERSION=2.2.6
 
 ENV PATH $PATH:/hbase/bin
 
@@ -27,7 +27,7 @@ WORKDIR /
 
 RUN \
     apk add --no-cache bash openjdk8-jre-base wget tar openssh && \
-    url="https://apache.mirror.digionline.de/hbase/$HBASE_VERSION/hbase-$HBASE_VERSION-bin.tar.gz"; \
+    url="https://downloads.apache.org/hbase/$HBASE_VERSION/hbase-$HBASE_VERSION-bin.tar.gz"; \
     wget -t 100 --retry-connrefused -O "hbase-$HBASE_VERSION-bin.tar.gz" "$url" && \
     mkdir hbase-$HBASE_VERSION && \
     tar zxf hbase-$HBASE_VERSION-bin.tar.gz -C hbase-$HBASE_VERSION --strip 1 && \

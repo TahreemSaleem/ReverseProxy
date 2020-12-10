@@ -1,4 +1,4 @@
-version: '2'
+version: '2.3' # I changed this
 services:
   nginx:
      container_name: "nginx"
@@ -23,7 +23,47 @@ services:
               - zookeeper
      ports:
          - "8080:8080"
+         - "2181:2181"
+     healthcheck:
+         test: wget -q http://localhost:8080/ || exit 1
+         interval: 10s
+         retries: 5
 
+  gserve1:
+     container_name: "gserve1"
+     build:
+         context: gserve
+         dockerfile: Dockerfile
+     networks:
+         - se_backend
+     environment:
+         - HOSTNAME=gserve1
+         - PORT=9090
+     ports:
+         - "9090:9090"
+     depends_on:
+          hbase:
+               condition: service_healthy
+
+  gserve2:
+     container_name: "gserve2"
+     build:
+         context: gserve
+         dockerfile: Dockerfile
+     networks:
+         - se_backend
+     environment:
+         - HOSTNAME=gserve2
+         - PORT=9091
+     ports:
+         - "9091:9091"
+
+     depends_on:
+         hbase:
+            condition: service_healthy
+
+
+#       - "grproxy"
 
 
 #        gserve1:
@@ -32,3 +72,4 @@ services:
 
 networks:
         se_backend:
+          driver: bridge

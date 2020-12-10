@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="en"><head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <title>SE2 Assignment 1: Online Library</title>
+
+    <link rel="stylesheet" href="./css/icons.css">
+    <link rel="stylesheet" href="./css/materialize.min.css">
+
+    </style>
+</head>
+
+<body><div class="container">
+
+    <h1>SE2 Library</h1>
+
+    <div class="row">
+
+
+        {{range .Row}}
+            <!-- Document -->
+            <div class="row"><h2>{{.Key}}</h2></div>
+
+            {{range .Cell}}
+                {{if hasPrefix "document:" .Column }}
+                <div class="row"><h3>Document</h3></div>
+                <div class="row kvdata">
+                    <div class="input-field col s5">
+                        <label>{{.Column | replace "document:" ""}}</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <label>{{.Value | replace "value:" ""}}</label>
+                    </div>
+                </div>
+                {{end}}
+                {{if hasPrefix "metadata:" .Column }}
+                <div class="row"><h3>Metadeta</h3></div>
+                <div class="row kvdata">
+                    <div class="input-field col s5">
+                        <label>{{.Column | replace "metadata:" ""}}</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <label>{{.Value | replace "value:" ""}}</label>
+                    </div>
+                </div>
+                {{end}}
+            {{end}}
+
+
+        {{end}}
+    </div>
+
+</div>
+<p>proudly served by {{env "HOSTNAME"}}</p>
+</body></html>

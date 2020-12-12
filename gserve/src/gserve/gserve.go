@@ -26,13 +26,15 @@ func main() {
 
 	//connecting to zookeeper
 	var err error
-	conn, _, err = zk.Connect([]string{"zookeeper"}, time.Millisecond) //*10)
+	conn, _, err = zk.Connect([]string{"zookeeper"}, time.Second) //*10)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println("Connected to Zookeeper")
 	entityData, _ := json.Marshal(endpoint{Host: os.Getenv("HOSTNAME"), Port: os.Getenv("PORT")})
-	_, err = conn.Create("/", entityData, zk.FlagEphemeral|zk.FlagSequence, zk.WorldACL(zk.PermAll))
+
+	_, err = conn.Create("/server", []byte{}, 0, zk.WorldACL(zk.PermAll))
+	_, err = conn.Create("/server/"+os.Getenv("HOSTNAME"), entityData, zk.FlagEphemeral, zk.WorldACL(zk.PermAll))
 	if err != nil {
 		panic(err)
 	}
@@ -40,7 +42,7 @@ func main() {
 	http.HandleFunc("/", handler)
 	//http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("http/css"))))
 
-	fmt.Printf("Starting server at port 9090\n")
+	fmt.Println("Starting server at port:"+os.Getenv("PORT"))
 	if err := http.ListenAndServe(":"+os.Getenv("PORT"), nil); err != nil {
 		log.Fatal(err)
 	}
@@ -50,10 +52,6 @@ func main() {
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/" {
-		http.Error(w, "404 not found.", http.StatusNotFound)
-		return
-	}
 
 	switch r.Method {
 	case "GET":
@@ -126,7 +124,7 @@ func retrieveHBase()RowsType{
 	defer resp.Body.Close()
 
 	Scanner, _ := resp.Location()
-	fmt.Println(Scanner)
+
 	req, err = http.NewRequest("GET",Scanner.String(), nil)
 	req.Header.Set("Accept", "application/json")
 	resp, err = client.Do(req)

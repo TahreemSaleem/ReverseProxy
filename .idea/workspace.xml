@@ -2,13 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f8a6761a-0bcd-48be-9615-aa51ba2c04fd" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/gserve/bin/gserve" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gserve/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gserve/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/gserve/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gserve/src/gserve/gserve.go" beforeDir="false" afterPath="$PROJECT_DIR$/gserve/src/gserve/gserve.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/hbase/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/hbase/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grproxy/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/grproxy/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grproxy/bin/grproxy" beforeDir="false" afterPath="$PROJECT_DIR$/grproxy/bin/grproxy" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/grproxy/src/grproxy/grproxy.go" beforeDir="false" afterPath="$PROJECT_DIR$/grproxy/src/grproxy/grproxy.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,7 +41,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.sdk.automatically.set" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/gserve" />
+    <property name="last_opened_file_path" value="$USER_HOME$" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">

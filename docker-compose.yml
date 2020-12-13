@@ -8,9 +8,7 @@ services:
      networks:
         - se_backend
      volumes:
-        - "./nginx/www:/var/www/nginx"
-     ports:
-        - "80:80"
+        - ./nginx/www:/var/www/nginx
 
   hbase:
      container_name: "hbase"
@@ -21,9 +19,9 @@ services:
          se_backend:
             aliases:
               - zookeeper
-     ports:
-         - "8080:8080"
-         - "2181:2181"
+#     ports:
+#         - "8080:8080"
+#         - "2181:2181"
      healthcheck:
          test: wget -q http://localhost:8080/ || exit 1
          interval: 10s
@@ -39,11 +37,13 @@ services:
      environment:
          - HOSTNAME=gserve1
          - PORT=9090
-     ports:
-         - "9090:9090"
+#     ports:
+#         - "9090:9090"
      depends_on:
           hbase:
-               condition: service_healthy
+            condition: service_healthy
+          grproxy:
+            condition: service_started
 
   gserve2:
      container_name: "gserve2"
@@ -55,21 +55,33 @@ services:
      environment:
          - HOSTNAME=gserve2
          - PORT=9091
-     ports:
-         - "9091:9091"
+#     ports:
+#         - "9091:9091"
 
      depends_on:
          hbase:
             condition: service_healthy
+         grproxy:
+           condition: service_started
 
-
-#       - "grproxy"
-
-
-#        gserve1:
-#        gserve2:
-#        grproxy:
+  grproxy:
+      container_name: "grproxy"
+      build:
+        context: grproxy
+        dockerfile: Dockerfile
+      networks:
+        - se_frontend
+        - se_backend
+      ports:
+        - "80:80"
+      environment:
+        - PORT=80
+      depends_on:
+        hbase:
+          condition: service_healthy
 
 networks:
-        se_backend:
-          driver: bridge
+      se_backend:
+        driver: bridge
+      se_frontend:
+        driver: bridge

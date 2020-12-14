@@ -22,8 +22,6 @@ type endpoint struct {
 }
 
 func main() {
-	//port := "9090"
-
 	//connecting to zookeeper
 	var err error
 	conn, _, err = zk.Connect([]string{"zookeeper"}, time.Second) //*10)
@@ -40,15 +38,10 @@ func main() {
 	}
 
 	http.HandleFunc("/", handler)
-	//http.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir("http/css"))))
-
-	fmt.Println("Starting server at port:"+os.Getenv("PORT"))
+	fmt.Println("Starting server at port:" + os.Getenv("PORT"))
 	if err := http.ListenAndServe(":"+os.Getenv("PORT"), nil); err != nil {
 		log.Fatal(err)
 	}
-	//if err := http.ListenAndServe(":9090", nil); err != nil {
-	//	log.Fatal(err)
-	//}
 }
 
 func handler(w http.ResponseWriter, r *http.Request) {
@@ -62,7 +55,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			panic(err)
 		}
-	// add response
+
 	case "POST":
 		unencodedJSON, err := ioutil.ReadAll(r.Body)
 		if err != nil {
@@ -75,6 +68,10 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				http.Error(w, "400 Bad Request", http.StatusBadRequest)
 				log.Fatalln(err)
+			}
+			if len(unencodedRows.Row) == 0 {
+				http.Error(w, "400 Bad Request", http.StatusBadRequest)
+				return
 			}
 
 			err = updateHBase(encodedJSON, unencodedRows)
@@ -92,10 +89,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 func parseJSON(unencodedJSON []byte) (encodedJSON []byte, unencodedRows RowsType, err error) {
 
-	// unencoded JSON bytes from landing page
-	// note: quotation marks need to be escaped with backslashes within Go strings: " -> \"
-	//unencodedJSON := []byte("{\"Row\":[{\"key\":\"My first document\",\"Cell\":[{\"column\":\"document:Chapter 1\",\"$\":\"value:Once upon a time...\"},{\"column\":\"metadata:Author\",\"$\":\"value:The incredible me!\"}]}]}")
-	// convert JSON to Go objects
 
 	err = json.Unmarshal(unencodedJSON, &unencodedRows)
 	// encode fields in Go objects
@@ -103,15 +96,11 @@ func parseJSON(unencodedJSON []byte) (encodedJSON []byte, unencodedRows RowsType
 	// convert encoded Go objects to JSON
 	encodedJSON, err = json.Marshal(encodedRows)
 
-	//println("unencoded:", string(unencodedJSON))
-	//println("encoded:", string(encodedJSON))
-
 	return encodedJSON, unencodedRows, err
 }
-func retrieveHBase()RowsType{
+func retrieveHBase() RowsType {
 	client := &http.Client{}
 
-	//body := strings.NewReader(`<Scanner batch="10"/>`)
 	req, err := http.NewRequest("PUT", "http://hbase:8080/se2:library/scanner/", bytes.NewBuffer([]byte(`<Scanner batch="10"> </Scanner>`)))
 
 	req.Header.Set("Accept", "text/plain")
@@ -125,7 +114,7 @@ func retrieveHBase()RowsType{
 
 	Scanner, _ := resp.Location()
 
-	req, err = http.NewRequest("GET",Scanner.String(), nil)
+	req, err = http.NewRequest("GET", Scanner.String(), nil)
 	req.Header.Set("Accept", "application/json")
 	resp, err = client.Do(req)
 	if err != nil {
@@ -138,11 +127,10 @@ func retrieveHBase()RowsType{
 
 	var encodedRows EncRowsType
 	err = json.Unmarshal(bodyBytes, &encodedRows)
-	decodedRows ,_ := encodedRows.decode()
-
+	decodedRows, _ := encodedRows.decode()
 
 	//delete scanner
-	_, err = http.NewRequest(http.MethodDelete,Scanner.String(), nil)
+	_, err = http.NewRequest(http.MethodDelete, Scanner.String(), nil)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -151,17 +139,9 @@ func retrieveHBase()RowsType{
 }
 func updateHBase(encodedJSON []byte, unencodedRows RowsType) error {
 
-	/*
-		output:
-
-		unencoded: {"Row":[{"key":"Myfirstdocument","Cell":[{"column":"document:Chapter 1","$":"value:Once upon a time..."},{"column":"metadata:Author","$":"value:The incredible me!"}]}]}
-		encoded: {"Row":[{"key":"TXkgZmlyc3QgZG9jdW1lbnQ=","Cell":[{"column":"ZG9jdW1lbnQ6Q2hhcHRlciAx","$":"dmFsdWU6T25jZSB1cG9uIGEgdGltZS4uLg=="},{"column":"bWV0YWRhdGE6QXV0aG9y","$":"dmFsdWU6VGhlIGluY3JlZGlibGUgbWUh"}]}]}
-	*/
-
 	// initialize http client
 	client := &http.Client{}
 
-	//resp, err := http.Post("","application/json", bytes.NewBuffer(requestBody))
 	key := unencodedRows.Row[0].Key
 	req, err := http.NewRequest(http.MethodPut, "http://hbase:8080/se2:library/"+key, bytes.NewBuffer(encodedJSON))
 

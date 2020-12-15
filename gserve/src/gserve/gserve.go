@@ -62,18 +62,16 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "500 something went wrong", http.StatusInternalServerError)
 			log.Fatalln(err)
 		}
-
+		encodedJSON, unencodedRows, err := parseJSON(unencodedJSON)
+		if err != nil {
+			http.Error(w, "400 Bad Request", http.StatusBadRequest)
+			log.Fatalln(err)
+		}
+		if len(unencodedRows.Row) == 0 {
+			http.Error(w, "200 OK", http.StatusOK)
+			return
+		}
 		if zk.StateConnected == conn.State() || zk.StateHasSession == conn.State() {
-			encodedJSON, unencodedRows, err := parseJSON(unencodedJSON)
-			if err != nil {
-				http.Error(w, "400 Bad Request", http.StatusBadRequest)
-				log.Fatalln(err)
-			}
-			if len(unencodedRows.Row) == 0 {
-				http.Error(w, "400 Bad Request", http.StatusBadRequest)
-				return
-			}
-
 			err = updateHBase(encodedJSON, unencodedRows)
 			if err != nil {
 				http.Error(w, "500 something went wrong", http.StatusInternalServerError)
